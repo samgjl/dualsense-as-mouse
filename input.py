@@ -61,6 +61,8 @@ class ps5ControllerInterface:
                 self.aiming = False
         self.stop()
 
+
+    # CONSIDER RUNNING AN ALPHANUMERIC RECOGNIZER ON WHATEVER SOMEONE DRAWS ON THE TOUCHPAD
     def pullOutKeyboard(self, state = None):
             if self.dualsense.state.L3:
                 pyautogui.hotkey('alt', 'shift', 'o') # Shortcut for pulling our Google's on-screen keyboard

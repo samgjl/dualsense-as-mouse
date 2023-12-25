@@ -5,7 +5,7 @@ def main():
     os.system("python -m venv venv")
 
     print("Installing requirements...\n")
-    requirements = ["pydualsense", "pyautogui"]
+    requirements = ["pydualsense", "pyautogui", "numpy", "matplotlib", "scipy"] # DO I NEED ALL OF THESE???
     os.system("pip install " + " ".join(requirements) + " --target=.\\venv\\Lib\\site-packages")
     os.system("copy hidapi.dll .\\venv\\Lib\\site-packages")
 
