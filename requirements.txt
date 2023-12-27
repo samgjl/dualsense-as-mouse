@@ -1,0 +1,7 @@
+pydualsense
+numpy
+matplotlib
+hidapi
+mouse
+pynput
+tensorflow
