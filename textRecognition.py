@@ -19,8 +19,8 @@ class TextRecognition:
         self.isActive = False
         self.tracking = False
         # Classifiers:
-        self.classifier = Model()
-        self.classifier.load("model.keras")
+        # self.classifier = Model()
+        # self.classifier.load("model.keras")
     
     # Add a point to the array of positions
     # @PARAMS: point - tuple of x and y coordinates
@@ -75,16 +75,25 @@ class Model():
     def build(self):
         # Define the model
         self.model = keras.Sequential([
-            keras.layers.Normalization(),
-            keras.layers.Flatten(input_shape=(28, 28, 1)),  # Flatten the 28x28x1 images to a 784-element vector
+            keras.layers.Conv2D(128, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)),
+            keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            keras.layers.Conv2D(64, kernel_size=(3, 3), activation='relu'),
+            keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            keras.layers.Flatten(),
             keras.layers.Dense(128, activation='relu'),
-            # keras.layers.Dropout(0.2),
+            keras.layers.Dropout(0.2),
             keras.layers.Dense(len(self.labels), activation='softmax')
+            #* OLD:
+            # keras.layers.Normalization(),
+            # keras.layers.Flatten(input_shape=(28, 28, 1)),  # Flatten the 28x28x1 images to a 784-element vector
+            # keras.layers.Dense(128, activation='relu'),
+            # # keras.layers.Dropout(0.2),
+            # keras.layers.Dense(len(self.labels), activation='softmax')
         ])
 
         # Compile the model
         self.model.compile(optimizer='adam',
-                    loss='sparse_categorical_crossentropy',
+                    loss='sparse_categorical_crossentropy', # TODO: WHICH??? 'sparse_categorical_crossentropy'
                     metrics=['accuracy'])
 
     def train(self, epochs = 5) -> None:
@@ -119,9 +128,9 @@ class Model():
 
 if __name__ == "__main__":
     model = Model()
-    # model.build()
-    model.load()
-    # model.train()
+    model.build()
+    # model.load()
+    model.train(epochs = 50)
 
     from PIL import Image
     image = Image.open("output.png")

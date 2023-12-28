@@ -5,3 +5,4 @@ hidapi
 mouse
 pynput
 tensorflow
+tensorflow-datasets
