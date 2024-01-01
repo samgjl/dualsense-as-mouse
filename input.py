@@ -1,15 +1,13 @@
 from pydualsense import *
 import math
 import textRecognition as tr
-import sys
-import time
-import mouse # TODO: REPLACE THIS WITH pyinput.mouse (Controller)
+import mouse
 from pynput.keyboard import Key, Controller as KeyboardController
 
 
 class ps5ControllerInterface:
 
-    def __init__(self, resolution = (2560, 1440)):
+    def __init__(self, resolution = (2560, 1440), use_models = True):
         print("Starting...")
         # Get controller
         self.dualsense = pydualsense()
@@ -27,9 +25,12 @@ class ps5ControllerInterface:
         self.keyboard = KeyboardController()
 
         # Model:
-        self.ps_pressed = 0
-        self.model = tr.TextRecognition()
-        self.dualsense.ps_pressed.subscribe(self.activateModel)
+        if use_models:
+            self.ps_pressed = 0
+            self.model = tr.TextRecognition()
+            self.dualsense.ps_pressed.subscribe(self.activateModel)
+            self.model.mode = "letters"
+        # TODO: ADD ELSE HANDLING!
 
         # Auto-loop:
         self.addDefaultListeners() # Break out of this with the share key
@@ -83,7 +84,7 @@ class ps5ControllerInterface:
         if self.model.isActive and self.model.tracking:
                 # Predict:
                 self.model.matrixFromPositions()
-                self.model.classifier.predict(self.model.matrix)
+                self.model.predict(self.model.matrix)
                 self.model.savePNG(self.model.matrix) #* Remove in final version?
                 self.model.tracking = False
         else:
@@ -130,7 +131,8 @@ class ps5ControllerInterface:
     # CONSIDER RUNNING AN ALPHANUMERIC RECOGNIZER ON WHATEVER SOMEONE DRAWS ON THE TOUCHPAD
     def pullOutKeyboard(self, state = None):
             if self.dualsense.state.L3:
-                hotkey_combination = [Key.cmd, Key.ctrl, 'o']
+                # hotkey_combination = [Key.cmd, Key.ctrl, 'o']
+                hotkey_combination = [Key.alt, Key.shift, 'o']
                 with self.keyboard.pressed(hotkey_combination[0]):
                     with self.keyboard.pressed(hotkey_combination[1]):
                         self.keyboard.press(hotkey_combination[2])
@@ -143,9 +145,9 @@ class ps5ControllerInterface:
     # Mouse Clicks:
     def leftClick(self, state = None):
         if self.dualsense.state.R1 or self.dualsense.state.touchBtn or self.dualsense.state.cross:
+            
             mouse.press(button='left')
         else:
-            pass
             mouse.release(button='left')
     def rightClick(self, state = None):
         if self.dualsense.state.L1:
@@ -211,4 +213,4 @@ class ps5ControllerInterface:
 
 
 if __name__ == "__main__":
-    gyroReader = ps5ControllerInterface(resolution=(2560, 1440))
+    gyroReader = ps5ControllerInterface(resolution=(2560, 1440), use_models=True)

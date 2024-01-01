@@ -4,5 +4,6 @@ matplotlib
 hidapi
 mouse
 pynput
+scikit-learn
 tensorflow
 tensorflow-datasets
